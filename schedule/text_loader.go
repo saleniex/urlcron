@@ -15,6 +15,9 @@ func (s TextLoader) List() ([]*Schedule, error) {
 	lines := strings.Split(s.str, "\n")
 	for _, line := range lines {
 		schedule := ParseSchedule(line)
+		if schedule == nil {
+			continue
+		}
 		result = append(result, schedule)
 	}
 	return result, nil
