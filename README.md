@@ -47,3 +47,14 @@ Example of HTTP POST request every 15 minutes with content-type and authorizatio
 ## Telemetry
 
 Service provide telemetry in Prometheus format which can be obtained via http request `http://<servicename>:80`.  
+
+## Running as Docker container
+
+When running service as container configuration can be supplied either via mount or environment variable, or both. 
+Container is available in dockerhub.
+
+Example when config in `/home/user/crontab`:
+
+```shell
+docker run --rm -v /home/user/crontab:/usr/src/app/crontab saleniex/cronurl
+```
