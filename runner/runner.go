@@ -2,6 +2,7 @@ package runner
 
 import (
 	"github.com/adhocore/gronx/pkg/tasker"
+	"log"
 	"urlcron/metric"
 	"urlcron/schedule"
 )
@@ -26,6 +27,7 @@ func (r Runner) Run() {
 		panic(err)
 	}
 	if len(list) == 0 {
+		log.Println("No tasks are configured. Use either file mount or environment variable to pass task configuration.")
 		return
 	}
 
