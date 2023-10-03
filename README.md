@@ -58,3 +58,12 @@ Example when config in `/home/user/crontab`:
 ```shell
 docker run --rm -v /home/user/crontab:/usr/src/app/crontab saleniex/cronurl
 ```
+
+## Configuration
+
+Application support following environment variables:
+
+- `ADDR` - Address and port where http service is listening. Default any IP address on port `80`.
+- `CRONTAB` - Crontab definition. Might be multiline separated with `\n` (multiline). 
+- `VERBOSE` - Enable verbose behaviour. All scheduler activities are logged. Default `false`.
+- 

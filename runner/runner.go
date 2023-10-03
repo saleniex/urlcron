@@ -7,6 +7,9 @@ import (
 	"urlcron/schedule"
 )
 
+// Verbose controls runner verbosity
+var Verbose = false
+
 // Runner runs schedule loaded from loader
 type Runner struct {
 	loader        schedule.Loader
@@ -32,7 +35,7 @@ func (r Runner) Run() {
 	}
 
 	taskr := tasker.New(tasker.Option{
-		Verbose: true,
+		Verbose: Verbose,
 	})
 
 	for _, item := range list {
