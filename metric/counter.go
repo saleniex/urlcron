@@ -5,18 +5,31 @@ import (
 	"strings"
 )
 
-const SuccessCounter = "success_total"
-const HttpErrorCounter = "error_total{type=\"http\"}"
-const StatusErrorCounter = "error_total{type=\"status\"}"
+const FailTypeHttp = "http"
+const FailTypeStatus = "status"
 
 var counter *Counter
 
-// IncCounter increases
-func IncCounter(key string) {
+// IncResultUrlFailTypeCounter increases fail type counter for URL
+func IncResultUrlFailTypeCounter(url, failType string) {
+	key := fmt.Sprintf("cronurl_call{result=\"fail\", url=\"%s\", fail_type=\"%s\"}", url, failType)
+	getCounter().Inc(key)
+}
+
+// IncResultUrlSuccessCounter increases success counter for URL
+func IncResultUrlSuccessCounter(url string) {
+	key := fmt.Sprintf("cronurl_call{result=\"success\", url=\"%s\"}", url)
+	getCounter().Inc(key)
+}
+
+// getCounter ensures initialized counter variable
+func getCounter() *Counter {
 	if counter == nil {
-		counter = NewCounter()
+		counter = &Counter{
+			items: make(map[string]int),
+		}
 	}
-	counter.Inc(key)
+	return counter
 }
 
 func PrometheusDump() string {
@@ -25,18 +38,6 @@ func PrometheusDump() string {
 
 type Counter struct {
 	items map[string]int
-}
-
-func NewCounter() *Counter {
-	c := &Counter{
-		items: make(map[string]int),
-	}
-	// Preset well known counters
-	c.items[SuccessCounter] = 0
-	c.items[HttpErrorCounter] = 0
-	c.items[StatusErrorCounter] = 0
-
-	return c
 }
 
 func (c *Counter) Inc(key string) {

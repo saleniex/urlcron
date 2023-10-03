@@ -18,7 +18,7 @@ type Schedule struct {
 func (s Schedule) Exec(ctx context.Context) (int, error) {
 	req, err := http.NewRequest(s.Target.Method, s.Target.Url, bytes.NewBufferString(s.Target.Payload))
 	if err != nil {
-		metric.IncCounter(metric.HttpErrorCounter)
+		metric.IncResultUrlFailTypeCounter(s.Target.Url, metric.FailTypeHttp)
 		return 1, err
 	}
 
@@ -28,16 +28,15 @@ func (s Schedule) Exec(ctx context.Context) (int, error) {
 
 	resp, doErr := getHttpClient().Do(req)
 	if doErr != nil {
-		metric.IncCounter(metric.HttpErrorCounter)
+		metric.IncResultUrlFailTypeCounter(s.Target.Url, metric.FailTypeHttp)
 		return 0, doErr
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		metric.IncCounter(metric.StatusErrorCounter)
+		metric.IncResultUrlFailTypeCounter(s.Target.Url, metric.FailTypeStatus)
 		return 1, fmt.Errorf("URL %s responded with status %d", s.Target.Url, resp.StatusCode)
 	}
-
-	metric.IncCounter(metric.SuccessCounter)
+	metric.IncResultUrlSuccessCounter(s.Target.Url)
 
 	return 0, nil
 }
