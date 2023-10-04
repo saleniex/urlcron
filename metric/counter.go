@@ -33,7 +33,7 @@ func getCounter() *Counter {
 }
 
 func PrometheusDump() string {
-	return counter.PrometheusDump()
+	return getCounter().PrometheusDump()
 }
 
 type Counter struct {
