@@ -1,8 +1,8 @@
 URL crontab 
 ===
 
-Service which performs scheduled URL calls based on crontab specification. Intended to be as a lighter replacement of 
-Kubernetes scheduler.  
+Lightweight implementation of HTTP call focused crontab. Can be used for GET and POST calls with custom HTTP headers and 
+data payload.
 
 ## Configuration format
 
@@ -46,7 +46,7 @@ Example of HTTP POST request every 15 minutes with content-type and authorizatio
 
 ## Telemetry
 
-Service provide telemetry in Prometheus format which can be obtained via http request `http://<servicename>:80`.  
+Service provide telemetry in Prometheus format which can be obtained via http request `http://<servicename>:80/metrics`.  
 
 ## Running as Docker container
 
@@ -66,4 +66,3 @@ Application support following environment variables:
 - `ADDR` - Address and port where http service is listening. Default any IP address on port `80`.
 - `CRONTAB` - Crontab definition. Might be multiline separated with `\n` (multiline). 
 - `VERBOSE` - Enable verbose behaviour. All scheduler activities are logged. Default `false`.
-- 
