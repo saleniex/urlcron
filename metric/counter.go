@@ -12,7 +12,7 @@ var counter *Counter
 
 // IncResultUrlFailTypeCounter increases fail type counter for URL
 func IncResultUrlFailTypeCounter(url, failType string) {
-	key := fmt.Sprintf("cronurl_call{result=\"fail\", url=\"%s\", fail_type=\"%s\"}", url, failType)
+	key := fmt.Sprintf("urlcron_call{result=\"fail\", url=\"%s\", fail_type=\"%s\"}", url, failType)
 	getCounter().Inc(key)
 }
 
