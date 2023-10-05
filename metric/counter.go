@@ -8,17 +8,19 @@ import (
 const FailTypeHttp = "http"
 const FailTypeStatus = "status"
 
+var metricLabel = "urlcron_call"
+
 var counter *Counter
 
 // IncResultUrlFailTypeCounter increases fail type counter for URL
 func IncResultUrlFailTypeCounter(url, failType string) {
-	key := fmt.Sprintf("urlcron_call{result=\"fail\", url=\"%s\", fail_type=\"%s\"}", url, failType)
+	key := fmt.Sprintf("%s{result=\"fail\", url=\"%s\", fail_type=\"%s\"}", metricLabel, url, failType)
 	getCounter().Inc(key)
 }
 
 // IncResultUrlSuccessCounter increases success counter for URL
 func IncResultUrlSuccessCounter(url string) {
-	key := fmt.Sprintf("cronurl_call{result=\"success\", url=\"%s\"}", url)
+	key := fmt.Sprintf("%s{result=\"success\", url=\"%s\"}", metricLabel, url)
 	getCounter().Inc(key)
 }
 
