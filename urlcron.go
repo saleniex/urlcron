@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"strings"
 	"urlcron/metric"
@@ -44,7 +45,7 @@ func envBool(key string, def bool) bool {
 	if val == "" {
 		return def
 	}
-	if val == "ture" || val == "yes" || val == "1" {
+	if val == "true" || val == "yes" || val == "1" {
 		return true
 	} else {
 		return false

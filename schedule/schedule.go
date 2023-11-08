@@ -13,17 +13,15 @@ var httpClient *http.Client
 type Schedule struct {
 	Schedule string
 	Target   *Target
+	request  *http.Request
 }
 
-func (s Schedule) Exec(ctx context.Context) (int, error) {
-	req, err := http.NewRequest(s.Target.Method, s.Target.Url, bytes.NewBufferString(s.Target.Payload))
+// Exec executes the schedule
+// Returns exit code and error
+func (s *Schedule) Exec(ctx context.Context) (int, error) {
+	req, err := s.scheduleRequest()
 	if err != nil {
-		metric.IncResultUrlFailTypeCounter(s.Target.Url, metric.FailTypeHttp)
 		return 1, err
-	}
-
-	for key, value := range s.Target.Headers {
-		req.Header.Set(key, value)
 	}
 
 	resp, doErr := getHttpClient().Do(req)
@@ -34,11 +32,26 @@ func (s Schedule) Exec(ctx context.Context) (int, error) {
 
 	if resp.StatusCode != http.StatusOK {
 		metric.IncResultUrlFailTypeCounter(s.Target.Url, metric.FailTypeStatus)
-		return 1, fmt.Errorf("URL %s responded with status %d", s.Target.Url, resp.StatusCode)
+		return 0, fmt.Errorf("URL %s responded with status %d", s.Target.Url, resp.StatusCode)
 	}
 	metric.IncResultUrlSuccessCounter(s.Target.Url)
 
 	return 0, nil
+}
+
+func (s *Schedule) scheduleRequest() (*http.Request, error) {
+	if s.request == nil {
+		req, err := http.NewRequest(s.Target.Method, s.Target.Url, bytes.NewBufferString(s.Target.Payload))
+		if err != nil {
+			metric.IncResultUrlFailTypeCounter(s.Target.Url, metric.FailTypeHttp)
+			return nil, err
+		}
+		for key, value := range s.Target.Headers {
+			req.Header.Set(key, value)
+		}
+		s.request = req
+	}
+	return s.request, nil
 }
 
 func getHttpClient() *http.Client {
