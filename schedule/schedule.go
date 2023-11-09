@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"urlcron/metric"
 )
@@ -29,6 +30,9 @@ func (s *Schedule) Exec(ctx context.Context) (int, error) {
 		metric.IncResultUrlFailTypeCounter(s.Target.Url, metric.FailTypeHttp)
 		return 0, doErr
 	}
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
 		metric.IncResultUrlFailTypeCounter(s.Target.Url, metric.FailTypeStatus)
