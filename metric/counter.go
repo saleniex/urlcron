@@ -56,5 +56,8 @@ func (c *Counter) PrometheusDump() string {
 	for key, val := range c.items {
 		builder.WriteString(fmt.Sprintf("%s %d\n", key, val))
 	}
-	return builder.String()
+	s := builder.String()
+	builder.Reset()
+
+	return s
 }
